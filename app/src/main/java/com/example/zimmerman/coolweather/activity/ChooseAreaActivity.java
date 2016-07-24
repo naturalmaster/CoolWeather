@@ -83,15 +83,18 @@ public class ChooseAreaActivity extends BaseActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (currentLevel == LEVEL_PROVINCE) {
                     selectedProvince = provinceList.get(position);
+                    queryCities();
                 } else if (currentLevel == LEVEL_CITY) {
                     selectedCity = cityList.get(position);
+                    queryCounties();
                 }
             }
         });
+          queryProvinces();
 
     }
 
-    /*
+    /*f
     查找省、市、县的数据。优先从数据库找。找不到就去服务器查找
      */
 

@@ -30,7 +30,7 @@ public class CoolWeatherOpenHelper extends SQLiteOpenHelper{
     /*
     county 建表语句
      */
-    public static final String CREATE_COUNTY = "create table Couty("
+    public static final String CREATE_COUNTY = "create table County("
             +"id integer primary key autoincrement,"
             +"county_name text,"
             +"county_code text,"
