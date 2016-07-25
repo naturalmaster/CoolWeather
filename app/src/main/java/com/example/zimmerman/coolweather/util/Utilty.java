@@ -93,6 +93,7 @@ public class Utilty {
      */
 
     public static void handleWeatherResponse(Context context ,String response) {
+        LogUtil.d("test","address: ");
         try {
             JSONObject jsonObject = new JSONObject(response);
             JSONObject weatherInfo = jsonObject.getJSONObject("weatherinfo");

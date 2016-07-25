@@ -1,23 +1,27 @@
 package com.example.zimmerman.coolweather.activity;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.zimmerman.coolweather.R;
 import com.example.zimmerman.coolweather.util.HttpCallBackListener;
 import com.example.zimmerman.coolweather.util.HttpUtil;
+import com.example.zimmerman.coolweather.util.LogUtil;
 import com.example.zimmerman.coolweather.util.Utilty;
 
 /**
  * Created by Zimmerman on 2016/7/24.
  */
-public class WeatherActivity extends BaseActivity {
+public class WeatherActivity extends BaseActivity implements View.OnClickListener {
 
     private LinearLayout weatherInfoLayout;
 
@@ -34,14 +38,22 @@ public class WeatherActivity extends BaseActivity {
     private TextView temp2Text;
     /*x显示当前日期*/
     private TextView currentDateText;
-
+    /*更新和切换城市的按钮*/
+    private Button switchCity;
+    private Button refresh;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.weather_layout);
         initView();
+
         String countyCode = getIntent().getStringExtra("county_code");
+//        如果将一下两个注册监听事件的语句放入 iniView() 方法中，那么运行时就会报错 ：IOException
+        /*jv
+        * 具体情况也不是很清楚，调试得出是this的问题，具体是什么问题就不知道了*/
+        switchCity.setOnClickListener(this);
+        refresh.setOnClickListener(this);
         if (!TextUtils.isEmpty(countyCode)) {
             publishText.setText("同步中");
             cityNameText.setVisibility(View.INVISIBLE);
@@ -53,6 +65,8 @@ public class WeatherActivity extends BaseActivity {
             * */
             showWeather();
         }
+
+
 
     }
 
@@ -68,6 +82,13 @@ public class WeatherActivity extends BaseActivity {
         temp1Text = (TextView) findViewById(R.id.temp1);
         temp2Text = (TextView) findViewById(R.id.temp2);
         currentDateText = (TextView) findViewById(R.id.current_date);
+
+
+        switchCity = (Button) findViewById(R.id.switch_city);
+        refresh = (Button) findViewById(R.id.refresh_weather);
+
+
+
     }
 
     /*
@@ -95,23 +116,25 @@ public class WeatherActivity extends BaseActivity {
      */
     private void queryFromServer(String address, final String type) {
 
+        LogUtil.d("test", "++queryFromServer");
+
         HttpUtil.sendHttpRequest(address, new HttpCallBackListener() {
             @Override
             public void onFinish(String request) {
-                if (type.equals("county")) {
+                if ("county".equals(type)) {
                     if (!TextUtils.isEmpty(request)) {
-                        String [] array = request.split("\\|");
-                        if (array!= null&& array.length ==2){
+                        String[] array = request.split("\\|");
+                        if (array != null && array.length == 2) {
                             queryWeatherInfo(array[1]);
                         }
                     }
-                } else  if (type.equals("weathercode")) {
+                } else if ("weathercode".equals(type)) {
 
                     /*
                     这里需要处理返回的天气信息
                      */
 
-                    Utilty.handleWeatherResponse(WeatherActivity.this,request);
+                    Utilty.handleWeatherResponse(WeatherActivity.this, request);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -151,5 +174,31 @@ public class WeatherActivity extends BaseActivity {
 
         weatherInfoLayout.setVisibility(View.VISIBLE);
         cityNameText.setVisibility(View.VISIBLE);
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+
+            case R.id.switch_city:
+                Intent intent = new Intent(this,ChooseAreaActivity.class);
+                intent.putExtra("from_weather_activity",true);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.refresh_weather:
+                publishText.setText("同步中");
+                SharedPreferences sharedPreferences = PreferenceManager.
+                        getDefaultSharedPreferences(this);
+                String weatherCode = sharedPreferences.getString("weather_code","");
+                if(!TextUtils.isEmpty(weatherCode)) {
+                    queryWeatherInfo(weatherCode);
+                }
+                break;
+
+            default:
+                break;
+        }
     }
 }

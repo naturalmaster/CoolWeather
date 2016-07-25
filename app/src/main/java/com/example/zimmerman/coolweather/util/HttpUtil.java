@@ -16,6 +16,7 @@ public class HttpUtil {
     public static void sendHttpRequest(final String address,
                                        final HttpCallBackListener listener) {
 
+//        BufferedReader reader;
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -35,25 +36,34 @@ public class HttpUtil {
                         StringBuilder response = new StringBuilder();
                         String line;
 
-//                        LogUtil.d("test",reader.readLine());
-                        while((line = reader.readLine())!= null) {
-
+                        while(
+                                ( line = reader.readLine() )
+                                        != null
+                                ) {
+                            LogUtil.d("test",line);
                             response.append(line);
+                            LogUtil.d("test", " after data");
                         }
+                        LogUtil.d("test","after while\n"+"line:"+line +"  response: "+response);
 
                         if (listener != null) {
+                            LogUtil.d("test", "now  I am goint to enter on Finish");
+                            LogUtil.d("test", "address: " + address);
+                            reader.close();
                             listener.onFinish(response.toString());
+                            LogUtil.d("test", "now  I am goint to OUT FROM Finish");
+
                         }
 
                     } catch (MalformedURLException e) {
                         if (listener != null) {
-                            LogUtil.e("test", e.toString());
+                            LogUtil.e("test", "+++MalformedURLException");
                             listener.onError(e);
                         }
                         e.printStackTrace();
                     } catch (IOException e) {
                         if (listener != null) {
-                            LogUtil.e("test", e.toString());
+                            LogUtil.e("test","+++IOException" );
                             listener.onError(e);
                         }
                         e.printStackTrace();
