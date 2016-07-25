@@ -35,6 +35,7 @@ public class HttpUtil {
                         StringBuilder response = new StringBuilder();
                         String line;
 
+//                        LogUtil.d("test",reader.readLine());
                         while((line = reader.readLine())!= null) {
 
                             response.append(line);
@@ -46,11 +47,13 @@ public class HttpUtil {
 
                     } catch (MalformedURLException e) {
                         if (listener != null) {
+                            LogUtil.e("test", e.toString());
                             listener.onError(e);
                         }
                         e.printStackTrace();
                     } catch (IOException e) {
                         if (listener != null) {
+                            LogUtil.e("test", e.toString());
                             listener.onError(e);
                         }
                         e.printStackTrace();
