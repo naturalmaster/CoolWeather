@@ -67,6 +67,7 @@ public class HttpUtil {
                             listener.onError(e);
                         }
                         e.printStackTrace();
+
                     } finally {
                         if (connection != null) {
                             connection.disconnect();

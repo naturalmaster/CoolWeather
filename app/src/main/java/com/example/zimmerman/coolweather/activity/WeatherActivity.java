@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.zimmerman.coolweather.R;
+import com.example.zimmerman.coolweather.service.AutoUpdateService;
 import com.example.zimmerman.coolweather.util.HttpCallBackListener;
 import com.example.zimmerman.coolweather.util.HttpUtil;
 import com.example.zimmerman.coolweather.util.LogUtil;
@@ -170,10 +171,13 @@ public class WeatherActivity extends BaseActivity implements View.OnClickListene
         temp2Text.setText(sharedPreferences.getString("temp2",""));
         weatherInfoText.setText(sharedPreferences.getString("weather_desp",""));
         publishText.setText("今天"+sharedPreferences.getString("publish_time"+"发布",""));
-        currentDateText.setText(sharedPreferences.getString("current_date",""));
+        currentDateText.setText(sharedPreferences.getString("current_date", ""));
 
         weatherInfoLayout.setVisibility(View.VISIBLE);
         cityNameText.setVisibility(View.VISIBLE);
+
+        Intent intent = new Intent(this, AutoUpdateService.class);
+        startService(intent);
     }
 
 
