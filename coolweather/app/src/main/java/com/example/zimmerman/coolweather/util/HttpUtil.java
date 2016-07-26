@@ -20,9 +20,8 @@ public class HttpUtil {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                HttpURLConnection connection = null;
-                BufferedReader reader = null;
-                try {
+                    HttpURLConnection connection = null;
+                    try {
                         URL url= new URL(address);
                         connection = (HttpURLConnection) url.openConnection();
                         connection.setRequestMethod("GET");
@@ -30,7 +29,7 @@ public class HttpUtil {
                         connection.setReadTimeout(8000);
 
                         InputStream in = connection.getInputStream();
-                        reader = new BufferedReader(
+                        BufferedReader reader = new BufferedReader(
                                 new InputStreamReader(in)
                         );
 
@@ -50,6 +49,7 @@ public class HttpUtil {
                         if (listener != null) {
                             LogUtil.d("test", "now  I am goint to enter on Finish");
                             LogUtil.d("test", "address: " + address);
+                            reader.close();
                             listener.onFinish(response.toString());
                             LogUtil.d("test", "now  I am goint to OUT FROM Finish");
 
@@ -69,13 +69,6 @@ public class HttpUtil {
                         e.printStackTrace();
 
                     } finally {
-                    if (reader != null) {
-                        try {
-                            reader.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
                         if (connection != null) {
                             connection.disconnect();
                         }

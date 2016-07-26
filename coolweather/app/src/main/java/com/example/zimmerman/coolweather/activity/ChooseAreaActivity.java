@@ -108,11 +108,9 @@ public class ChooseAreaActivity extends BaseActivity {
                     selectedCity = cityList.get(position);
                     queryCounties();
                 } else if (currentLevel == LEVEL_COUNTY) {
-//                    String countyCode = countyList.get(position).getCountyCode();
-                    //modify for new jvhe
-                    String countyName = countyList.get(position).getCountyName();
+                    String countyCode = countyList.get(position).getCountyCode();
                     Intent intent = new Intent(ChooseAreaActivity.this,WeatherActivity.class);
-                    intent.putExtra("city_name",countyName);
+                    intent.putExtra("county_code",countyCode);
                     startActivity(intent);
                     finish();
                 }
@@ -186,13 +184,11 @@ public class ChooseAreaActivity extends BaseActivity {
     private void queryFromServer (final String code, final String type) { //code 城市代号，查找市、县时使用
 
         String address;
-
         if (!TextUtils.isEmpty(code)) {
             address = "http://www.weather.com.cn/data/list3/city"+code+".xml";
         } else {
             address = "http://www.weather.com.cn/data/list3/city.xml";
         }
-
         showProgressDialog();
 
         HttpUtil.sendHttpRequest(address, new HttpCallBackListener() {
@@ -206,7 +202,7 @@ public class ChooseAreaActivity extends BaseActivity {
                     result = Utilty.handleCityResponse(coolWeatherDB,request,
                             selectedProvince.getId());
                 } else if ("county".equals(type)) {
-                    result = Utilty.handleCountyResponse(coolWeatherDB, request,
+                    result = Utilty.handleCountyResponse(coolWeatherDB,request,
                             selectedCity.getId());
                 }
 

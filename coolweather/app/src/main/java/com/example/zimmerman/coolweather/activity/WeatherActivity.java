@@ -3,7 +3,6 @@ package com.example.zimmerman.coolweather.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteCantOpenDatabaseException;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
@@ -15,14 +14,10 @@ import android.widget.TextView;
 
 import com.example.zimmerman.coolweather.R;
 import com.example.zimmerman.coolweather.service.AutoUpdateService;
-import com.example.zimmerman.coolweather.util.HandleJvheHttpUtil;
 import com.example.zimmerman.coolweather.util.HttpCallBackListener;
 import com.example.zimmerman.coolweather.util.HttpUtil;
 import com.example.zimmerman.coolweather.util.LogUtil;
 import com.example.zimmerman.coolweather.util.Utilty;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by Zimmerman on 2016/7/24.
@@ -34,7 +29,6 @@ public class WeatherActivity extends BaseActivity implements View.OnClickListene
     /*城市名*/
     private TextView cityNameText;
 
-    private TextView moon_text;
     /*发布时间*/
     private TextView publishText;
 
@@ -55,29 +49,22 @@ public class WeatherActivity extends BaseActivity implements View.OnClickListene
         setContentView(R.layout.weather_layout);
         initView();
 
-//        String countyCode = getIntent().getStringExtra("county_code");
-        String countyName = getIntent().getStringExtra("city_name");
-
+        String countyCode = getIntent().getStringExtra("county_code");
 //        如果将一下两个注册监听事件的语句放入 iniView() 方法中，那么运行时就会报错 ：IOException
         /*jv
         * 具体情况也不是很清楚，调试得出是this的问题，具体是什么问题就不知道了*/
         switchCity.setOnClickListener(this);
         refresh.setOnClickListener(this);
-        if (!TextUtils.isEmpty(countyName)) {
+        if (!TextUtils.isEmpty(countyCode)) {
             publishText.setText("同步中");
             cityNameText.setVisibility(View.INVISIBLE);
             weatherInfoLayout.setVisibility(View.INVISIBLE);
-            queryFromServer(countyName);
+            queryWeatherCode(countyCode);
         } else {
             /*
             * 直接显示本地缓存中的天气信息
             * */
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    showWeather();
-                }
-            });
+            showWeather();
         }
 
 
@@ -88,13 +75,13 @@ public class WeatherActivity extends BaseActivity implements View.OnClickListene
     初始化各控件
      */
     private void initView() {
-        moon_text = (TextView) findViewById(R.id.moon_text);
+
         weatherInfoLayout = (LinearLayout) findViewById(R.id.weather_info_layout);
         weatherInfoText = (TextView) findViewById(R.id.weather_desp);
         cityNameText = (TextView) findViewById(R.id.city_name);
         publishText = (TextView) findViewById(R.id.publish_text);
         temp1Text = (TextView) findViewById(R.id.temp1);
-//        temp2Text = (TextView) findViewById(R.id.temp2);
+        temp2Text = (TextView) findViewById(R.id.temp2);
         currentDateText = (TextView) findViewById(R.id.current_date);
 
 
@@ -105,75 +92,36 @@ public class WeatherActivity extends BaseActivity implements View.OnClickListene
 
     }
 
-
     /*
     根据 县级代号查询天气代号
      */
-    /*
     private void queryWeatherCode(String countyCode) {
 
         String address = "http://www.weather.com.cn/data/list3/city"+
                 countyCode+".xml";
         queryFromServer(address, "county");
     }
-*/
 
     /*
     根据天气代号查询天气
      */
-/*
     private void queryWeatherInfo(String weatherCode) {
 
         String address = "http://www.weather.com.cn/data/cityinfo/"+
                 weatherCode +".html";
         queryFromServer(address, "weathercode");
     }
-*/
-
 
     /*
-    根据传入地址，以及类型 去服务器查询天气信息
-    FOR jvhe
+    根据传入地址，以及类型 去服务器查询天气信息 或天气代号
      */
-    private void queryFromServer( final String countyName) {
+    private void queryFromServer(String address, final String type) {
 
-        LogUtil.d("jvhe_test","---------queryFromServer---------");
-        LogUtil.d("jvhe_test", countyName);
+        LogUtil.d("test", "++queryFromServer");
 
-        Map paramas = new HashMap();
-        paramas.put("cityname",countyName);
-        paramas.put("key",HandleJvheHttpUtil.APP_KEY);
-        LogUtil.d("query",countyName);
-        HandleJvheHttpUtil.sendHttpToJvhe(paramas, new HttpCallBackListener() {
+        HttpUtil.sendHttpRequest(address, new HttpCallBackListener() {
             @Override
-            public void onFinish(String response) {
-
-
-                Utilty.handlJvheWeather(WeatherActivity.this, response);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        showWeather();
-                    }
-                });
-
-
-            }
-
-            @Override
-            public void onError(Exception e) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        publishText.setText("同步失败...");
-                    }
-                });
-            }
-        });
-//        HttpUtil.sendHttpRequest(address, new HttpCallBackListener() {
-//            @Override
-//            public void onFinish(String response) {
-/*
+            public void onFinish(String request) {
                 if ("county".equals(type)) {
                     if (!TextUtils.isEmpty(request)) {
                         String[] array = request.split("\\|");
@@ -186,7 +134,7 @@ public class WeatherActivity extends BaseActivity implements View.OnClickListene
                     /*
                     这里需要处理返回的天气信息
                      */
-/*
+
                     Utilty.handleWeatherResponse(WeatherActivity.this, request);
                     runOnUiThread(new Runnable() {
                         @Override
@@ -195,9 +143,8 @@ public class WeatherActivity extends BaseActivity implements View.OnClickListene
                         }
                     });
                 }
-*/
             }
-/*
+
             @Override
             public void onError(Exception e) {
 
@@ -210,7 +157,7 @@ public class WeatherActivity extends BaseActivity implements View.OnClickListene
             }
         });
 
-    }*/
+    }
 
     /*
     从本地的SharedPreference读取天气信息，并显示在控件上
@@ -219,24 +166,18 @@ public class WeatherActivity extends BaseActivity implements View.OnClickListene
 
         SharedPreferences sharedPreferences = PreferenceManager
                 .getDefaultSharedPreferences(this);
-        LogUtil.d("debug", sharedPreferences.getString("city_name", ""));
-        LogUtil.d("debug", String.valueOf(sharedPreferences.getInt("temp", -1)));
-
-
-        cityNameText.setText(sharedPreferences.getString("city_name", ""));
-
-        moon_text.setText("农历"+sharedPreferences.getString("moon",""));
-        temp1Text.setText(String.valueOf(sharedPreferences.getInt("temp", -1)) + "℃");
-
-        weatherInfoText.setText(sharedPreferences.getString("weather_info", ""));
-        publishText.setText("今天"+sharedPreferences.getString("publish_time","")+"发布");
-        currentDateText.setText(sharedPreferences.getString("date", ""));
+        cityNameText.setText(sharedPreferences.getString("city_name",""));
+        temp1Text.setText(sharedPreferences.getString("temp1",""));
+        temp2Text.setText(sharedPreferences.getString("temp2",""));
+        weatherInfoText.setText(sharedPreferences.getString("weather_desp",""));
+        publishText.setText("今天"+sharedPreferences.getString("publish_time"+"发布",""));
+        currentDateText.setText(sharedPreferences.getString("current_date", ""));
 
         weatherInfoLayout.setVisibility(View.VISIBLE);
         cityNameText.setVisibility(View.VISIBLE);
 
-//        Intent intent = new Intent(this, AutoUpdateService.class);
-//        startService(intent);
+        Intent intent = new Intent(this, AutoUpdateService.class);
+        startService(intent);
     }
 
 
@@ -254,9 +195,9 @@ public class WeatherActivity extends BaseActivity implements View.OnClickListene
                 publishText.setText("同步中");
                 SharedPreferences sharedPreferences = PreferenceManager.
                         getDefaultSharedPreferences(this);
-                String countyName = sharedPreferences.getString("city_name","");
-                if(!TextUtils.isEmpty(countyName)) {
-                    queryFromServer(countyName);
+                String weatherCode = sharedPreferences.getString("weather_code","");
+                if(!TextUtils.isEmpty(weatherCode)) {
+                    queryWeatherInfo(weatherCode);
                 }
                 break;
 

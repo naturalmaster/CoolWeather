@@ -40,7 +40,6 @@
         android:background="#27A5F9">
         <TextView
             android:id="@+id/publish_text"
-            android:hint="testteste"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -55,19 +54,10 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:orientation="vertical">
-
             <TextView
                 android:id="@+id/current_date"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
-                android:gravity="center"
-                android:textColor="#FFF"
-                android:textSize="18sp"/>
-            <TextView
-                android:id="@+id/moon_text"
-
-                android:layout_width="wrap_content"
-                android:layout_height="25dp"
                 android:gravity="center"
                 android:textColor="#FFF"
                 android:textSize="18sp"/>
@@ -90,9 +80,27 @@
                     android:id="@+id/temp1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
                     android:textColor="#FFF"
                     android:textSize="40sp"/>
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:text="~"
+                    android:textColor="#FFF"
+                    android:textSize="40sp"/>
+
+                <TextView
+                    android:id="@+id/temp2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:textColor="#FFF"
+                    android:textSize="40sp"/>
             </LinearLayout>
         </LinearLayout>
     </RelativeLayout>
