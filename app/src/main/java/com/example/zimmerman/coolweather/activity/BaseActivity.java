@@ -12,7 +12,7 @@ public class BaseActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LogUtil.d("test","onCreate");
+        LogUtil.d("baseActivity","onCreate");
     }
 
     @Override
@@ -37,7 +37,7 @@ public class BaseActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        LogUtil.d("test", "onDestroy");
+        LogUtil.d("baseActivity", "onDestroy");
     }
 
 

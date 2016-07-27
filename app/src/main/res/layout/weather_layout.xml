@@ -37,7 +37,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="#27A5F9">
+        android:background="#f0cb3e">
         <TextView
             android:id="@+id/publish_text"
             android:hint="testteste"
@@ -46,7 +46,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
-            android:textColor="#FFF"
+            android:textColor="#952d12"
             android:textSize="18sp"/>
 
         <LinearLayout
@@ -61,7 +61,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:gravity="center"
-                android:textColor="#FFF"
+                android:textColor="#952d12"
                 android:textSize="18sp"/>
             <TextView
                 android:id="@+id/moon_text"
@@ -69,7 +69,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="25dp"
                 android:gravity="center"
-                android:textColor="#FFF"
+                android:textColor="#952d12"
                 android:textSize="18sp"/>
 
             <TextView
@@ -78,7 +78,7 @@
                 android:layout_height="60dp"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"
-                android:textColor="#FFF"
+                android:textColor="#952d12"
                 android:textSize="40sp"/>
 
             <LinearLayout
@@ -90,7 +90,7 @@
                     android:id="@+id/temp1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="#FFF"
+                    android:textColor="#952d12"
                     android:textSize="40sp"/>
 
             </LinearLayout>

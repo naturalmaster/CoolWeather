@@ -80,8 +80,6 @@ public class WeatherActivity extends BaseActivity implements View.OnClickListene
             });
         }
 
-
-
     }
 
     /*
@@ -135,7 +133,7 @@ public class WeatherActivity extends BaseActivity implements View.OnClickListene
     根据传入地址，以及类型 去服务器查询天气信息
     FOR jvhe
      */
-    private void queryFromServer( final String countyName) {
+    private void queryFromServer( final String countyName) {   //更新天气
 
         LogUtil.d("jvhe_test","---------queryFromServer---------");
         LogUtil.d("jvhe_test", countyName);
@@ -235,8 +233,10 @@ public class WeatherActivity extends BaseActivity implements View.OnClickListene
         weatherInfoLayout.setVisibility(View.VISIBLE);
         cityNameText.setVisibility(View.VISIBLE);
 
-//        Intent intent = new Intent(this, AutoUpdateService.class);
-//        startService(intent);
+        Intent intent = new Intent(this, AutoUpdateService.class);
+        startService(intent);
+
+
     }
 
 

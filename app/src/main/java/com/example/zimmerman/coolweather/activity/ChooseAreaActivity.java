@@ -22,6 +22,7 @@ import com.example.zimmerman.coolweather.model.County;
 import com.example.zimmerman.coolweather.model.Province;
 import com.example.zimmerman.coolweather.util.HttpCallBackListener;
 import com.example.zimmerman.coolweather.util.HttpUtil;
+import com.example.zimmerman.coolweather.util.LogUtil;
 import com.example.zimmerman.coolweather.util.Utilty;
 
 import java.util.ArrayList;
@@ -285,4 +286,10 @@ public class ChooseAreaActivity extends BaseActivity {
             finish();
         }
     }
- }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LogUtil.d("test","chooseAreaActivity++destroy");
+    }
+}
